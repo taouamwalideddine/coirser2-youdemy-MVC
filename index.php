@@ -7,6 +7,7 @@ require_once 'Controllers/controllers_AuthController.php';
 require_once 'Controllers/controllers_CourseController.php';
 require_once 'Controllers/controllers_TeacherController.php';
 require_once 'Controllers/controllers_AdminController.php';
+require_once 'Controllers/controllers_StudentController.php';
 
 session_start();
 
@@ -26,7 +27,7 @@ $router->addRoute('POST', '/course/delete/{id}', 'CourseController@delete');
 $router->addRoute('GET', '/course/edit/{id}', 'CourseController@edit');
 $router->addRoute('POST', '/course/update/{id}', 'CourseController@update');
 
-$router->addRoute('GET', '/student/my-courses', 'StudentController@myCourses');
+$router->addRoute('GET', '/my-courses', 'StudentController@myCourses');
 
 $router->addRoute('GET', '/teacher/dashboard', 'TeacherController@dashboard');
 $router->addRoute('GET', '/teacher/courses', 'TeacherController@courses');

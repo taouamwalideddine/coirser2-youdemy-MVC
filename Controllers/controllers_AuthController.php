@@ -29,7 +29,7 @@ public function login() {
             error_log("User authenticated successfully: " . print_r($user, true));
 
             $_SESSION['user'] = [
-                'id' => $user->getId(),
+                'id_user' => $user->getId(),
                 'username' => $user->getUsername(),
                 'role' => $user->getRole(),
             ];

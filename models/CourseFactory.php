@@ -133,18 +133,18 @@ class CourseFactory {
     }
 
     public function getCoursesByStudent($studentId) {
-        $sql = "SELECT c.* FROM courses c
-                JOIN enrollments e ON c.id = e.course_id
-                WHERE e.student_id = :student_id";
+        $sql = "SELECT courses.* 
+                FROM courses
+                JOIN enrollments ON courses.id = enrollments.course_id
+                WHERE enrollments.user_id = :student_id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':student_id', $studentId);
-        $stmt->execute();
-        $coursesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $courses = [];
-        foreach ($coursesData as $courseData) {
-            $courses[] = $this->createCourse($courseData['type'], $courseData);
+        
+        if (!$stmt->execute()) {
+            error_log("SQL Error: " . print_r($stmt->errorInfo(), true));
+            return [];
         }
-        return $courses;
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
