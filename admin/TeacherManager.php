@@ -52,34 +52,33 @@ class TeacherManager {
     }
 
     public function getGlobalStatistics($id) {
-        
-        return [
+        $stats = [
             'totalCourses' => $this->statistics->getTotalCoursesbyTeacher($id),
             'mostPopularCourse' => $this->statistics->getMostPopularCoursebyTeacher($id),
             'students' => $this->statistics->getStudents($id)
         ];
+        return $stats;
     }
+
     public function getCourseMembersByCourseId($courseId) {
         $query = "SELECT u.id_user, u.username, u.email 
                   FROM users u 
                   JOIN enrollments ce ON u.id_user = ce.student_id 
-                  WHERE ce.course_id = :id ORDER BY id ASC";
+                  WHERE ce.course_id = :id ORDER BY id_user ASC";
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id',$courseId);
         $stmt->execute();
-        $data =  $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $listMemebres = [];
         $i = 0;
         foreach ($data as $userData) {
-
-        $listMemebres[$i] = $this->userFactory->createUser('student', $userData);
-        $i++;
+            $listMemebres[$i] = $this->userFactory->createUser('student', $userData);
+            $i++;
         }
         return $listMemebres;
     }
-
 
     public function getAllTeachers() {
         return $this->userFactory->getAllTeachers();

@@ -1,13 +1,14 @@
 <?php
 require_once 'admin/TeacherManager.php';
 class CourseController {
+    private $db;
     private $courseFactory;
     private $teacherManager;
 
     public function __construct() {
-        $db = Database::getInstance()->getConnection();
-        $this->courseFactory = new CourseFactory($db);
-        $this->teacherManager = new TeacherManager($db);
+        $this->db = Database::getInstance()->getConnection();
+        $this->courseFactory = new CourseFactory($this->db);
+        $this->teacherManager = new TeacherManager($this->db);
     }
 
     public function show($id) {
@@ -46,5 +47,25 @@ class CourseController {
 
         $this->courseFactory->updateCourse($course);
         header('Location: /teacher/courses');
+    }
+
+    public function enroll($courseId) {
+        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'student') {
+            header('Location: /Croiser2/login');
+            return;
+        }
+
+        try {
+            $sql = "INSERT INTO enrollments (student_id, course_id) VALUES (:student_id, :course_id)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':student_id', $_SESSION['user']['id'], PDO::PARAM_INT);
+            $stmt->bindParam(':course_id', $courseId, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            header('Location: /Croiser2/my-courses');
+        } catch (PDOException $e) {
+            error_log("Error enrolling in course: " . $e->getMessage());
+            header('Location: /Croiser2/course/' . $courseId);
+        }
     }
 }

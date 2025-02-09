@@ -10,9 +10,9 @@ class VideoCourse extends Course {
             $this->id = $courseData['id'] ?? null ;
             $this->title = $courseData['title'] ;
             $this->description = $courseData['description'] ?? null;
-            $this->teacher_id = $courseData['teacher_id'];
-            $this->category_id = $courseData['category_id'];
-            $this->videoUrl = $courseData['document_url'];
+            $this->teacher_id = $courseData['teacher_id']?? null;
+            $this->category_id = $courseData['category_id']?? null;
+            $this->videoUrl = $courseData['document_url']?? null;
             $this->status = $courseData['course_status'] ?? null;
 
         }

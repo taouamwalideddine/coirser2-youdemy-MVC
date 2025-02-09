@@ -20,41 +20,42 @@ class TeacherController {
     public function dashboard() {
         if (!$this->checkTeacherAuth()) return;
 
-        $teacher = $this->userFactory->createUser('teacher', $_SESSION['user']);
-        $teacherCourses = $teacher->getSpecificData();
-        $statistics = $this->teacherManager->getGlobalStatistics($teacher->getId());
-        require 'views/teacher/teacher_dashboard.php';
-    }
-
-    public function courses() {
-        if (!$this->checkTeacherAuth()) return;
-
-        $teacher = $this->userFactory->createUser('teacher', $_SESSION['user']);
-        $courses = $teacher->getSpecificData();
-        $categories = $this->categoryManager->listcategory();
-        $tags = $this->tagManager->listTags();
-        require 'views/teacher/teacher_courses.php';
-    }
-
-    public function store() {
-        if (!$this->checkTeacherAuth()) return;
-        
-        $course = $this->courseFactory->createCourse($_POST['content_type'], $_POST);
-        $id_course = $course->create($_POST);
-        
-        $tags = explode(',', $_POST["selected_tags"]);
-        foreach ($tags as $id_tag) {
-            $this->course_tag->create($id_course, $id_tag);
+        try {
+            $teacher = $this->userFactory->createUser('teacher', $_SESSION['user']);
+            $teacherCourses = $teacher->getSpecificData();
+            $statistics = $this->teacherManager->getGlobalStatistics($teacher->getId());
+            
+            // Add these variables for the dashboard
+            $totalStudents = $statistics['students'] ?? 0;
+            $totalViews = 0; // You'll need to implement this in your Statistics class
+            $averageRating = 0; // You'll need to implement this in your Statistics class
+            
+            require 'views/teacher/teacher_dashboard.php';
+        } catch (Exception $e) {
+            error_log("Dashboard error: " . $e->getMessage());
+            // Handle error appropriately
+            header('Location: /error');
         }
-        header('Location: /teacher/dashboard');
     }
 
     public function members($courseId) {
         if (!$this->checkTeacherAuth()) return;
 
-        $members = $this->teacherManager->getCourseMembersByCourseId($courseId);
-        header('Content-Type: application/json');
-        echo json_encode(['members' => $members]);
+        try {
+            $members = $this->teacherManager->getCourseMembersByCourseId($courseId);
+            header('Content-Type: application/json');
+            echo json_encode(['members' => array_map(function($member) {
+                return [
+                    'name' => $member->getUsername(),
+                    'email' => $member->getEmail(),
+                    'id' => $member->getId()
+                ];
+            }, $members)]);
+        } catch (Exception $e) {
+            error_log("Members fetch error: " . $e->getMessage());
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to fetch members']);
+        }
     }
 
     private function checkTeacherAuth() {

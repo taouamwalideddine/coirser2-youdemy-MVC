@@ -2,8 +2,6 @@
 $title = 'Youdemy - Admin Dashboard';
 ob_start();
 
-// Ensure $pendingCourses is defined and is an array
-$pendingCourses = $pendingCourses ?? [];
 ?>
 
 <div class="min-h-screen bg-gray-100">

@@ -56,27 +56,28 @@ class Statistics {
         $stmt->bindParam(':id',$id);
         $stmt->execute();
         $course = $stmt->fetch(PDO::FETCH_ASSOC);
-        $obj =   $this->courseFactory->createCourse($course["type"], $course);
-        return $obj;
-        
-
+        if ($course) {
+            return $this->courseFactory->createCourse($course["type"], $course);
+        }
+        return null;
     }
-    public function getStudents($idTeacher) {
-        $sql = "SELECT DISTINCT *
-                FROM users 
-                INNER JOIN enrollments ON users.id_user = enrollments.student_id
-				INNER JOIN courses ON enrollments.course_id = courses.id	
-				where courses.teacher_id =:teacher_id
-                
-                ";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(":teacher_id",$idTeacher);
-        $stmt->execute();
-       $data =  $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $listUsers = [];
-        $i = 0;
-  
-        return $listUsers;
+    public function getStudents($teacherId) {
+        try {
+            $query = "SELECT COUNT(DISTINCT e.student_id) as total
+                      FROM enrollments e
+                      JOIN courses c ON e.course_id = c.id
+                      WHERE c.teacher_id = :teacher_id";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':teacher_id', $teacherId);
+            $stmt->execute();
+            
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result['total'] ?? 0;
+        } catch (PDOException $e) {
+            error_log("Error getting student count: " . $e->getMessage());
+            return 0;
+        }
     }
 
     public function getTopTeachers() {

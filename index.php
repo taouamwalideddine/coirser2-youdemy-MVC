@@ -26,6 +26,7 @@ $router->addRoute('GET', '/course/{id}', 'CourseController@show');
 $router->addRoute('POST', '/course/delete/{id}', 'CourseController@delete');
 $router->addRoute('GET', '/course/edit/{id}', 'CourseController@edit');
 $router->addRoute('POST', '/course/update/{id}', 'CourseController@update');
+$router->addRoute('POST', '/course/enroll/{id}', 'CourseController@enroll');
 
 $router->addRoute('GET', '/my-courses', 'StudentController@myCourses');
 

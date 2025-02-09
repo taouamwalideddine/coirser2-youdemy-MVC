@@ -72,17 +72,18 @@ ob_start();
         <!-- Right Column - Course Content -->
         <div class="lg:col-span-2">
             <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'student'): ?>
-                <?php if (!$course->checkCourse($_SESSION['user']["id_user"],$courseId)): ?>
+                <?php if (!$course->checkCourse($_SESSION['user']["id"], $course->getId())): ?>
                     <div class="bg-white rounded-lg shadow-lg p-8 text-center">
                         <h3 class="text-2xl font-bold text-gray-800 mb-4">Ready to Start Learning?</h3>
                         <p class="text-gray-600 mb-6">Enroll now to access all course materials and start your learning journey.</p>
-                        <a href="index.php?action=enroll&id=<?php echo $course->getId(); ?>" 
-                           class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 transform hover:-translate-y-1">
-                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                            </svg>
-                            Enroll in this course
-                        </a>
+                        <form action="/Croiser2/course/enroll/<?= $course->getId() ?>" method="POST">
+                            <button type="submit" class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 transform hover:-translate-y-1">
+                                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                                Enroll in this course
+                            </button>
+                        </form>
                     </div>
                 <?php else: ?>
                     <div class="bg-white rounded-xl shadow-xl overflow-hidden">
@@ -126,7 +127,7 @@ ob_start();
                         </a>
                     </div>
                 </div>
-            <?php elseif (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'teacher'||'admin'): ?>
+            <?php elseif (isset($_SESSION['user']) && ($_SESSION['user']['role'] === 'teacher' || $_SESSION['user']['role'] === 'admin')): ?>
                 <div class="bg-white rounded-xl shadow-xl overflow-hidden">
                     <div class="bg-gray-800 px-6 py-4 flex items-center justify-between">
                         <div class="flex items-center space-x-2">

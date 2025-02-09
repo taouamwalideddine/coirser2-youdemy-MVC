@@ -66,7 +66,7 @@ class Router {
         [$controller, $action] = explode('@', $match['handler']);
         error_log("Matched route: Controller = $controller, Action = $action");
     
-        if (!class_exists($controller)) {
+        if (!class_exists($controller)) { 
             error_log("Controller not found: $controller");
             echo "404 - Controller not found";
             return;

@@ -59,19 +59,20 @@ class UserFactory {
         return null;
     }
     public function authenticate($username, $password) {
-        $sql = "SELECT * FROM users WHERE username = :username";
+        $sql = "SELECT id_user, username, password, role FROM users WHERE username = :username";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':username', $username);
 
         if (!$stmt->execute()) {
             return null;
         }
-
+    
         $userData = $stmt->fetch(PDO::FETCH_ASSOC);
-
+    
         if ($userData && password_verify($password, $userData['password'])) {
             return $this->createUser($userData['role'], $userData);
         }
+    
         return null;
     }
     public function getAllTeachers() {

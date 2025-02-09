@@ -15,10 +15,10 @@ class DocumentCourse extends Course {
               }
             $this->title = $courseData['title'];
             $this->description = $courseData['description'];
-            $this->teacher_id = $courseData['teacher_id'];
-            $this->category_id = $courseData['category_id'];
-            $this->documentUrl = $courseData['document_url'];
-            $this->status = $courseData['course_status'];
+            $this->teacher_id = $courseData['teacher_id'] ?? null;
+            $this->category_id = $courseData['category_id'] ?? null;
+            $this->documentUrl = $courseData['document_url'] ?? null;
+            $this->status = $courseData['course_status'] ?? null;
         }
     }
 

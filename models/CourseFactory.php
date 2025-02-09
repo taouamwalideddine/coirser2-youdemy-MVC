@@ -136,15 +136,17 @@ class CourseFactory {
         $sql = "SELECT courses.* 
                 FROM courses
                 JOIN enrollments ON courses.id = enrollments.course_id
-                WHERE enrollments.user_id = :student_id";
+                WHERE enrollments.student_id = :student_id";
+        
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':student_id', $studentId);
+        $stmt->bindParam(':student_id', $studentId, PDO::PARAM_INT);
+        $stmt->execute();
+        $coursesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        if (!$stmt->execute()) {
-            error_log("SQL Error: " . print_r($stmt->errorInfo(), true));
-            return [];
+        $courses = [];
+        foreach ($coursesData as $courseData) {
+            $courses[] = $this->createCourse($courseData['type'], $courseData);
         }
-        
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $courses;
     }
 }

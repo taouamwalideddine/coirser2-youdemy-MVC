@@ -15,7 +15,7 @@ abstract class User implements CrudInterface, UserInterface {
         if ($userData) {
             $this->id = $userData['id'];
             $this->username = $userData['username'];
-            $this->email = $userData['email'];
+            $this->email = $userData['email'] ?? null;
         }
     }
     public function create($data){
@@ -107,7 +107,7 @@ public function suspend($id) {
 
     public function getId() {
         return $this->id;
-    }
+        }
 
     public function getUsername() {
         return $this->username;
